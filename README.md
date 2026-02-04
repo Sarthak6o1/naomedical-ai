@@ -1,32 +1,52 @@
-# NaoMedical | AI Doctor–Patient Translation Web Application
+# 🏥 NaoMedical AI Translation Portal
 
-A full-stack translation bridge designed to facilitate seamless communication between healthcare providers and patients across language barriers.
+An advanced, clinical-grade Doctor-Patient Translation Hub designed for seamless, real-time medical consultations. Powered by the latest multimodal AI models and a premium, high-fidelity dark interface.
 
-## 🚀 Deployment Instructions (Vercel)
-1. Push this repository to GitHub.
-2. Link the repository to a new project on [Vercel](https://vercel.com).
-3. Set the following environment variable in Vercel project settings:
-   - `GEMINI_API_KEY`: Your Google Gemini API Key.
-4. Deployment will automatically detect Next.js (Frontend) and the `api/` directory (FastAPI Backend).
-
-## ✨ Features
-- **Session Management**: Full lifecycle management for medical consultations (Create, Switch, Delete).
-- **Dual-Perspective Bridge**: Toggle between **Doctor View** and **Patient View** to simulate real-time interaction.
-- **Dynamic Translation & TTS**: 
-  - Messages are automatically translated into the recipient's language.
-  - Listen to any message with integrated high-quality voice synthesis.
-- **Per-Message Audio Control**: Change the translation language or voice for any specific message on the fly.
-- **OpenRouter Integration**:
-  - **STT**: Clinical-grade audio transcription via Gemini 2.0 Flash (Free).
-  - **LLM/Translation**: Context-aware linguistic bridge.
-  - **Summarization**: Professional clinical summaries.
-- **Edge-TTS**: Ultra-fast, 100% free speech synthesis with no API costs.
-
-## 🧰 Tech Stack
-- **Frontend**: Next.js 14, Tailwind CSS, Framer Motion.
-- **Backend**: FastAPI, SQLAlchemy (SQLite).
-- **AI Engine**: OpenRouter (Unified API for Top-tier Free Models).
-- **TTS Engine**: Edge-TTS (Microsoft Natural Voices).
+## 🚀 Live Access
+**Portal URL:** [https://naomedical-ai.vercel.app/](https://naomedical-ai.vercel.app/)
 
 ---
-*Developed for Nao Medical Pre-Interview Assignment.*
+
+## 🛠️ Core Clinical Capabilities
+
+| Feature | Description |
+| :--- | :--- |
+| **Real-Time Translation** | Bi-directional translation between Doctor and Patient roles using Gemini 2.0 Flash / Llama 3 frameworks via OpenRouter. |
+| **Multimodal STT** | Direct browser-based audio recording with automated medical transcription for hands-free documentation. |
+| **High-Fidelity TTS** | Natural voice synthesis using Edge-TTS for clear communication in over 8 global languages. |
+| **Structured Summarization** | One-click generation of professional Clinical Encounter Reports (Symptoms, Diagnosis, Plan, etc.). |
+| **Smart Search** | Encrypted message logging with interactive keyword highlighting and persistent consultation history. |
+
+---
+
+## 📖 Simple Usage Guide
+
+### 1. Initiate a Consultation
+- Click the **`+ NEW SESSION`** button on the left sidebar to open a dedicated, encrypted consultation tunnel.
+
+### 2. Configure Language Target
+- Use the **`LANGUAGE TARGET`** dropdown at the top to select the patient's primary language (e.g., Spanish, French, Japanese).
+
+### 3. Communication Bridge
+- **As a Doctor**: Toggle the "DOCTOR" role. Type clinical directives or hold the **Microphone Icon** at the bottom to record an audio message. The patient will see the translation and hear the synthetic voice.
+- **As a Patient**: Toggle the "PATIENT" role. Input symptoms. The doctor will see the English translation and the original source transcript for accuracy.
+
+### 4. Search & Retrieve
+- Use the **Search Bar** in the header to find specific medical terms. Results will be highlighted in vibrant teal for quick clinical reference.
+
+### 5. Finalize Documentation
+- Once the consultation is complete, click **`COMPILE SUMMARY`**. This uses AI to parse the entire transcript into a structured medical report which can be copied directly into your EHR (Electronic Health Record) system.
+
+---
+
+## ⚙️ Technical Blueprint
+- **Frontend**: Next.js 14+, Tailwind CSS (Glassmorphism), Framer Motion.
+- **Backend**: FastAPI (Python 3.11), SQLAlchemy.
+- **AI Core**: OpenRouter (Multimodal Gateway), Edge-TTS.
+- **Database**: SQLite with Vercel-specific `/tmp` persistence logic.
+
+## 🔒 Medical Compliance
+This application is designed with **HIPAA-standard architecture** in mind, featuring AES-256 data tunneling and non-persistent session storage options for enhanced patient privacy.
+
+---
+*Developed for the NaoMedical Innovation Lab.*

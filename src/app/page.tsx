@@ -223,35 +223,44 @@ export default function NaoPortal() {
   return (
     <div className="flex h-screen bg-[#020617] text-slate-200 overflow-hidden font-sans">
       {/* Premium Dark Sidebar */}
-      <aside className="w-80 bg-[#0f172a] border-r border-slate-800/50 flex flex-col z-20 shadow-2xl">
-        <div className="p-8 border-b border-slate-800/50">
+      <aside className="w-80 bg-gradient-to-b from-[#0f172a] via-[#0a0f1e] to-[#050810] border-r border-slate-800/30 flex flex-col z-20 shadow-[0_0_80px_rgba(0,0,0,0.5)] relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 via-transparent to-indigo-500/5 pointer-events-none" />
+        <div className="p-8 border-b border-white/[0.08] backdrop-blur-xl relative z-10">
           <div className="flex items-center gap-4 mb-8">
-            <div className="bg-teal-500/20 p-3 rounded-2xl text-teal-400 border border-teal-500/30">
-              <Activity size={24} className="animate-pulse" />
+            <div className="relative">
+              <div className="absolute inset-0 bg-teal-500 blur-xl opacity-30 animate-pulse" />
+              <div className="relative bg-gradient-to-br from-teal-500 to-teal-600 p-3.5 rounded-2xl text-white shadow-2xl">
+                <Activity size={22} className="drop-shadow-lg" />
+              </div>
             </div>
             <div>
-              <h1 className="text-xl font-black tracking-tighter text-white">NaoMedical</h1>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">AI Translation Hub</p>
+              <h1 className="text-xl font-black tracking-tight text-white drop-shadow-lg">NaoMedical</h1>
+              <p className="text-[9px] font-bold text-teal-400/80 uppercase tracking-[0.15em]">Clinical AI Suite</p>
             </div>
           </div>
 
           <button
             onClick={createNewSession}
-            className="w-full bg-teal-600 hover:bg-teal-500 text-white py-4 rounded-2xl flex items-center justify-center gap-2 transition-all font-black text-sm shadow-xl shadow-teal-900/20 active:scale-95"
+            className="w-full bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-500 hover:to-teal-400 text-white py-4 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 font-black text-sm shadow-[0_8px_30px_rgba(20,184,166,0.3)] hover:shadow-[0_8px_40px_rgba(20,184,166,0.5)] active:scale-[0.98] group relative overflow-hidden"
           >
-            <Plus size={18} strokeWidth={3} /> NEW SESSION
+            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+            <Plus size={18} strokeWidth={3} className="relative z-10" />
+            <span className="relative z-10">NEW ENCOUNTER</span>
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-10 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar relative z-10">
           {/* Search Records */}
           <section>
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4">Search Records</p>
-            <div className={`flex items-center gap-3 px-4 py-3 bg-slate-900/50 rounded-2xl border transition-all ${searchMode ? 'border-teal-500/30 bg-slate-800' : 'border-slate-800'}`}>
-              <Search size={14} className={searchMode ? 'text-teal-400' : 'text-slate-500'} />
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.25em]">Query Archive</p>
+              <Search size={11} className="text-slate-600" />
+            </div>
+            <div className={`flex items-center gap-3 px-4 py-3.5 bg-slate-950/60 rounded-2xl border backdrop-blur-sm transition-all duration-300 ${searchMode ? 'border-teal-500/40 bg-slate-900/80 shadow-[0_0_20px_rgba(20,184,166,0.15)]' : 'border-white/5 hover:border-white/10'}`}>
+              <Search size={14} className={`transition-colors ${searchMode ? 'text-teal-400' : 'text-slate-500'}`} />
               <input
-                placeholder="Search keywords..."
-                className="bg-transparent border-none focus:ring-0 text-[11px] font-black w-full placeholder-slate-700 text-white"
+                placeholder="Search encounters..."
+                className="bg-transparent border-none focus:ring-0 text-[11px] font-semibold w-full placeholder-slate-600 text-white"
                 value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); setSearchMode(!!e.target.value); }}
               />
@@ -300,31 +309,32 @@ export default function NaoPortal() {
           {/* Consultation History */}
           <section>
             <div className="flex items-center justify-between mb-4">
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Consultation History</p>
-              <History size={12} className="text-slate-600" />
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.25em]">Session Archive</p>
+              <History size={11} className="text-slate-600" />
             </div>
             <div className="space-y-2">
               {conversations.map(conv => (
                 <button
                   key={conv.id}
                   onClick={() => setActiveConvId(conv.id)}
-                  className={`w-full text-left p-4 rounded-2xl transition-all flex items-center gap-4 group relative overflow-hidden ${activeConvId === conv.id ? 'bg-slate-800/50 border border-slate-700/50 text-white shadow-inner' : 'hover:bg-slate-800/30 text-slate-400 border border-transparent'}`}
+                  className={`w-full text-left p-4 rounded-2xl transition-all duration-300 flex items-center gap-4 group relative overflow-hidden ${activeConvId === conv.id ? 'bg-gradient-to-r from-teal-950/40 to-slate-900/60 border border-teal-500/30 text-white shadow-[0_4px_20px_rgba(20,184,166,0.1)]' : 'hover:bg-slate-900/40 text-slate-400 border border-white/5 hover:border-white/10'}`}
                 >
-                  <div className={`p-2.5 rounded-xl ${activeConvId === conv.id ? 'bg-teal-500/20 text-teal-400' : 'bg-slate-800 text-slate-600 group-hover:bg-slate-700'}`}>
-                    <Calendar size={16} />
+                  <div className={`p-3 rounded-xl transition-all duration-300 ${activeConvId === conv.id ? 'bg-teal-500/20 text-teal-400 shadow-lg' : 'bg-slate-900/60 text-slate-500 group-hover:bg-slate-800 group-hover:text-slate-400'}`}>
+                    <Calendar size={15} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-black text-xs truncate uppercase tracking-tighter">Encounter #{conv.id}</p>
-                    <div className="flex items-center gap-2 mt-1 opacity-50">
-                      <Clock size={10} />
-                      <p className="text-[10px] font-medium tracking-tight">{new Date(conv.created_at).toLocaleDateString()}</p>
+                    <p className="font-black text-xs truncate tracking-tight">Session #{conv.id}</p>
+                    <div className="flex items-center gap-2 mt-1.5 opacity-60">
+                      <Clock size={9} />
+                      <p className="text-[9px] font-medium">{new Date(conv.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
                   <button
                     onClick={(e) => { e.stopPropagation(); deleteSession(conv.id); }}
-                    className="opacity-0 group-hover:opacity-100 p-2 hover:bg-red-500/20 hover:text-red-400 rounded-xl transition-all"
+                    className="opacity-0 group-hover:opacity-100 p-2.5 hover:bg-red-500/20 hover:text-red-400 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95"
+                    title="Delete session"
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={13} />
                   </button>
                 </button>
               ))}

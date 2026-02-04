@@ -266,6 +266,21 @@ export default function NaoPortal() {
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar relative z-10">
+
+          <button
+            onClick={async () => {
+              setLoading(true);
+              try {
+                const res = await axios.post(`${API_BASE}/conversations/${activeConvId}/summarize`);
+                setSummary(res.data.summary);
+              } catch (e) { } finally { setLoading(false); }
+            }}
+            className="w-full bg-white/5 border border-white/10 hover:bg-white/10 px-4 py-3 rounded-xl text-[10px] font-black tracking-widest transition-all active:scale-95 text-white flex gap-3 items-center justify-center mb-6 group"
+          >
+            <FileText size={14} className="text-teal-400 group-hover:scale-110 transition-transform" />
+            GENERATE SUMMARY
+          </button>
+
           {/* Search Records */}
           <section>
             <div className="flex items-center justify-between mb-4">
@@ -512,22 +527,9 @@ export default function NaoPortal() {
                       title="Switch Operation Mode"
                     >
                       <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
-                      Switch Role
+                      Switch Profile
                     </button>
                   </div>
-
-                  <button
-                    onClick={async () => {
-                      setLoading(true);
-                      try {
-                        const res = await axios.post(`${API_BASE}/conversations/${activeConvId}/summarize`);
-                        setSummary(res.data.summary);
-                      } catch (e) { } finally { setLoading(false); }
-                    }}
-                    className="bg-white/5 border border-white/10 hover:bg-white/10 px-6 py-4 rounded-2xl text-[10px] font-black tracking-widest transition-all active:scale-95 text-white flex gap-2 items-center"
-                  >
-                    <FileText size={16} className="text-teal-400" /> COMPILE SUMMARY
-                  </button>
                 </div>
               </header>
 
@@ -666,8 +668,8 @@ export default function NaoPortal() {
                                   </button>
                                   <select
                                     className={`appearance-none border-none text-[10px] font-black px-4 py-2 rounded-xl focus:ring-0 cursor-pointer transition-colors ${viewRole === 'doctor'
-                                        ? 'bg-teal-700/50 hover:bg-teal-700 text-teal-100'
-                                        : 'bg-indigo-700/50 hover:bg-indigo-700 text-indigo-100'
+                                      ? 'bg-teal-700/50 hover:bg-teal-700 text-teal-100'
+                                      : 'bg-indigo-700/50 hover:bg-indigo-700 text-indigo-100'
                                       }`}
                                     onChange={(e) => regenerateAudio(msg.id, e.target.value)}
                                     defaultValue={msg.language}

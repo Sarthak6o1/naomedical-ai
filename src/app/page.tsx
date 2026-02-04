@@ -76,8 +76,37 @@ export default function NaoPortal() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    fetchConversations();
+    // Restore state from local storage on mount
+    const storedRole = localStorage.getItem('naomed_role');
+    const storedConvId = localStorage.getItem('naomed_activeConvId');
+    const storedRoleSelected = localStorage.getItem('naomed_roleSelected');
+
+    if (storedRole) setViewRole(storedRole as 'doctor' | 'patient');
+    if (storedRoleSelected === 'true') setRoleSelected(true);
+
+    // Fetch conversations and then set active ID
+    fetchConversations().then((convs) => {
+      if (storedConvId && convs.some((c: Conversation) => c.id === parseInt(storedConvId))) {
+        setActiveConvId(parseInt(storedConvId));
+      } else if (convs.length > 0 && !storedConvId) {
+        // Default behavior if nothing stored
+        setActiveConvId(convs[0].id);
+      }
+    });
   }, []);
+
+  // Save state key changes
+  useEffect(() => {
+    localStorage.setItem('naomed_role', viewRole);
+  }, [viewRole]);
+
+  useEffect(() => {
+    if (activeConvId) localStorage.setItem('naomed_activeConvId', activeConvId.toString());
+  }, [activeConvId]);
+
+  useEffect(() => {
+    localStorage.setItem('naomed_roleSelected', roleSelected.toString());
+  }, [roleSelected]);
 
   useEffect(() => {
     if (activeConvId) {
@@ -104,11 +133,10 @@ export default function NaoPortal() {
     try {
       const res = await axios.get(`${API_BASE}/conversations`);
       setConversations(res.data);
-      if (res.data.length > 0 && !activeConvId) {
-        setActiveConvId(res.data[0].id);
-      }
+      return res.data; // Return for chaining
     } catch (err) {
       console.error("Failed to fetch sessions", err);
+      return [];
     }
   };
 

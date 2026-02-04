@@ -505,7 +505,15 @@ export default function NaoPortal() {
                 </div>
 
                 <div className="flex items-center gap-6">
-                  <div className="flex border border-white/5 bg-white/[0.02] p-1.5 rounded-2xl backdrop-blur-md opacity-0 pointer-events-none">
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => setShowRoleSelector(true)}
+                      className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 transition-all font-black text-[10px] text-slate-400 hover:text-white tracking-widest uppercase"
+                      title="Switch Operation Mode"
+                    >
+                      <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
+                      Switch Role
+                    </button>
                   </div>
 
                   <button
@@ -629,13 +637,15 @@ export default function NaoPortal() {
                       <motion.div
                         key={msg.id}
                         initial={{ opacity: 0, x: isOwnMessage ? 30 : -30 }} animate={{ opacity: 1, x: 0 }}
-                        className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
+                        className={`flex mb-8 ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
                       >
-                        <div className={`max-w-[75%] group flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'}`}>
+                        <div className={`max-w-[80%] group flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'}`}>
                           <div className={`p-8 rounded-[2.5rem] relative ${isOwnMessage
-                            ? 'bg-slate-900 border border-slate-800 text-white rounded-tr-none'
-                            : (viewRole === 'doctor' ? 'bg-teal-600 border border-teal-500/30 text-white rounded-tl-none' : 'bg-indigo-600 border border-indigo-500/30 text-white rounded-tl-none')
-                            } transition-all shadow-xl group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]`}>
+                            ? 'bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 text-slate-200 rounded-tr-none shadow-[0_10px_40px_rgba(0,0,0,0.2)]'
+                            : (viewRole === 'doctor'
+                              ? 'bg-gradient-to-br from-teal-600 via-teal-600 to-teal-700 border border-teal-500/30 text-white rounded-tl-none shadow-[0_10px_40px_rgba(20,184,166,0.15)]'
+                              : 'bg-gradient-to-br from-indigo-600 via-indigo-600 to-indigo-700 border border-indigo-500/30 text-white rounded-tl-none shadow-[0_10px_40px_rgba(79,70,229,0.15)]')
+                            } transition-all duration-300 hover:scale-[1.01]`}>
 
                             <div className="flex items-center justify-between mb-6 gap-8">
                               <div className="flex items-center gap-3">
@@ -655,12 +665,15 @@ export default function NaoPortal() {
                                     <RefreshCw size={14} strokeWidth={3} />
                                   </button>
                                   <select
-                                    className="bg-white/10 border-none text-[10px] font-black px-3 py-1.5 rounded-xl focus:ring-0 cursor-pointer"
+                                    className={`appearance-none border-none text-[10px] font-black px-4 py-2 rounded-xl focus:ring-0 cursor-pointer transition-colors ${viewRole === 'doctor'
+                                        ? 'bg-teal-700/50 hover:bg-teal-700 text-teal-100'
+                                        : 'bg-indigo-700/50 hover:bg-indigo-700 text-indigo-100'
+                                      }`}
                                     onChange={(e) => regenerateAudio(msg.id, e.target.value)}
                                     defaultValue={msg.language}
                                   >
                                     {LANGUAGES.map(l => (
-                                      <option key={l} value={l} className="bg-[#0f172a]">{l.toUpperCase()}</option>
+                                      <option key={l} value={l} className="bg-slate-900 text-slate-200">{l.toUpperCase()}</option>
                                     ))}
                                   </select>
                                 </div>

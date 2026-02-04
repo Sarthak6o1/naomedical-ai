@@ -93,8 +93,8 @@ export default function NaoPortal() {
         // Default behavior if nothing stored
         setActiveConvId(convs[0].id);
       } else {
-        // AUTO-CREATE if no sessions exist at all
-        createNewSession();
+        // If NO SESSIONS exist, force role selection even if it was previously 'true'
+        setRoleSelected(false);
       }
     });
   }, []);
@@ -189,9 +189,11 @@ export default function NaoPortal() {
         if (newConvs.length > 0) {
           setActiveConvId(newConvs[0].id);
         } else {
-          // If all deleted, clear role selection to reset or just leave as is
-          // Better: Auto-create a fresh one immediately to keep flow
-          createNewSession();
+          // If all deleted, go back to role selection
+          setActiveConvId(null);
+          setRoleSelected(false);
+          localStorage.removeItem('naomed_roleSelected');
+          localStorage.removeItem('naomed_activeConvId');
         }
       }
     } catch (err) {
@@ -398,7 +400,19 @@ export default function NaoPortal() {
         </div>
 
         <div className="p-8 border-t border-white/5 space-y-6">
-          <button onClick={() => setConversations([])} className="flex items-center gap-3 text-slate-600 hover:text-red-400 transition-all group">
+          <button
+            onClick={() => {
+              if (confirm("Permanently clear all archived clinical sessions? This action cannot be undone.")) {
+                setConversations([]);
+                setActiveConvId(null);
+                setRoleSelected(false);
+                localStorage.removeItem('naomed_activeConvId');
+                localStorage.removeItem('naomed_roleSelected');
+                // Note: ideally call a backend /conversations/all DELETE endpoint
+              }
+            }}
+            className="flex items-center gap-3 text-slate-600 hover:text-red-400 transition-all group"
+          >
             <Trash2 size={14} className="group-hover:animate-bounce" />
             <span className="text-[9px] font-black uppercase tracking-[0.2em]">Clear Archive</span>
           </button>

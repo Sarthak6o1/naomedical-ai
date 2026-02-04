@@ -1,13 +1,13 @@
-# 🏥 NaoMedical AI Translation Portal
+#  NaoMedical AI Translation Portal
 
 An advanced, clinical-grade Doctor-Patient Translation Hub designed for seamless, real-time medical consultations. Powered by the latest multimodal AI models and a premium, high-fidelity dark interface.
 
-## 🚀 Live Access
+##  Live Access
 **Portal URL:** [https://naomedical-ai.vercel.app/](https://naomedical-ai.vercel.app/)
 
 ---
 
-## 🛠️ Core Clinical Capabilities
+##  Core Clinical Capabilities
 
 | Feature | Description |
 | :--- | :--- |
@@ -42,7 +42,7 @@ An advanced, clinical-grade Doctor-Patient Translation Hub designed for seamless
 
 ---
 
-## ⚙️ Technical Blueprint
+##  Technical Blueprint
 - **Frontend**: Next.js 14+, Tailwind CSS (Glassmorphism), Framer Motion.
 - **Backend**: FastAPI (Python 3.11), SQLAlchemy.
 - **AI Core**: OpenRouter (Multimodal Gateway), Edge-TTS.

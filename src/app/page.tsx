@@ -668,25 +668,21 @@ export default function NaoPortal() {
                                     </div>
                                   ) : (
                                     <>
-                                      <button
-                                        onClick={() => regenerateAudio(msg.id, msg.language)}
-                                        className="p-2 hover:bg-white/20 rounded-xl transition-all active:scale-90"
-                                        title="Redraw AI Output"
-                                      >
-                                        <RefreshCw size={14} strokeWidth={3} />
-                                      </button>
-                                      <select
-                                        className={`appearance-none border-none text-[10px] font-black px-4 py-2 rounded-xl focus:ring-0 cursor-pointer transition-colors ${viewRole === 'doctor'
-                                          ? 'bg-teal-700/50 hover:bg-teal-700 text-teal-100'
-                                          : 'bg-indigo-700/50 hover:bg-indigo-700 text-indigo-100'
-                                          }`}
-                                        onChange={(e) => regenerateAudio(msg.id, e.target.value)}
-                                        defaultValue={msg.language}
-                                      >
-                                        {LANGUAGES.map(l => (
-                                          <option key={l} value={l} className="bg-slate-900 text-slate-200">{l.toUpperCase()}</option>
-                                        ))}
-                                      </select>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-[8px] font-black uppercase tracking-widest opacity-60">Change Language:</span>
+                                        <select
+                                          className={`appearance-none border-none text-[10px] font-black px-4 py-2 rounded-xl focus:ring-0 cursor-pointer transition-colors ${viewRole === 'doctor'
+                                            ? 'bg-teal-700/50 hover:bg-teal-700 text-teal-100'
+                                            : 'bg-indigo-700/50 hover:bg-indigo-700 text-indigo-100'
+                                            }`}
+                                          onChange={(e) => regenerateAudio(msg.id, e.target.value)}
+                                          value={msg.language}
+                                        >
+                                          {LANGUAGES.map(l => (
+                                            <option key={l} value={l} className="bg-slate-900 text-slate-200">{l.toUpperCase()}</option>
+                                          ))}
+                                        </select>
+                                      </div>
                                     </>
                                   )}
                                 </div>
@@ -733,7 +729,7 @@ export default function NaoPortal() {
                                 <audio
                                   controls
                                   src={msg.audio_url.startsWith('data') ? msg.audio_url : `${API_BASE.replace('/api', '')}${msg.audio_url}`}
-                                  className={`h-8 w-full ${!isOwnMessage ? 'opacity-80' : 'opacity-40 invert'}`}
+                                  className={`h-10 w-full rounded-lg ${!isOwnMessage ? 'opacity-100 contrast-125 brightness-110' : 'opacity-60 invert'}`}
                                 />
                               </div>
                             )}

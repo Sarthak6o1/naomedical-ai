@@ -50,7 +50,8 @@ type Conversation = {
 
 export default function NaoPortal() {
   const [viewRole, setViewRole] = useState<'doctor' | 'patient'>('doctor');
-  const [targetLang, setTargetLang] = useState('Spanish');
+  const [doctorLang, setDoctorLang] = useState('English');
+  const [patientLang, setPatientLang] = useState('Spanish');
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConvId, setActiveConvId] = useState<number | null>(null);
@@ -62,6 +63,8 @@ export default function NaoPortal() {
   const [loading, setLoading] = useState(false);
   const [searchMode, setSearchMode] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const LANGUAGES = ["English", "Spanish", "French", "Arabic", "Japanese", "German", "Mandarin", "Portuguese", "Hindi", "Russian"];
 
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
@@ -143,7 +146,7 @@ export default function NaoPortal() {
   const sendMessage = async () => {
     if (!inputText.trim() || !activeConvId) return;
     setLoading(true);
-    const actualTargetLang = viewRole === 'doctor' ? targetLang : 'English';
+    const actualTargetLang = viewRole === 'doctor' ? patientLang : doctorLang;
     try {
       const res = await axios.post(`${API_BASE}/conversations/${activeConvId}/messages`, null, {
         params: { role: viewRole, text: inputText, target_lang: actualTargetLang }
@@ -184,7 +187,7 @@ export default function NaoPortal() {
     setLoading(true);
     const formData = new FormData();
     formData.append('audio', blob);
-    const actualTargetLang = viewRole === 'doctor' ? targetLang : 'English';
+    const actualTargetLang = viewRole === 'doctor' ? patientLang : doctorLang;
     try {
       const res = await axios.post(`${API_BASE}/conversations/${activeConvId}/messages`, formData, {
         params: { role: viewRole, target_lang: actualTargetLang }
@@ -240,46 +243,102 @@ export default function NaoPortal() {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
-          <div className="px-4 py-4 flex items-center justify-between">
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Consultation History</p>
-            <BarChart3 size={12} className="text-slate-600" />
-          </div>
-          {conversations.map(conv => (
-            <button
-              key={conv.id}
-              onClick={() => setActiveConvId(conv.id)}
-              className={`w-full text-left p-4 rounded-2xl transition-all flex items-center gap-4 group relative overflow-hidden ${activeConvId === conv.id ? 'bg-slate-800/50 border border-slate-700/50 text-white shadow-inner' : 'hover:bg-slate-800/30 text-slate-400 border border-transparent'}`}
-            >
-              <div className={`p-2.5 rounded-xl ${activeConvId === conv.id ? 'bg-teal-500/20 text-teal-400' : 'bg-slate-800 text-slate-600 group-hover:bg-slate-700'}`}>
-                <Calendar size={16} />
+        <div className="flex-1 overflow-y-auto p-6 space-y-10 custom-scrollbar">
+          {/* Search Records */}
+          <section>
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4">Search Records</p>
+            <div className={`flex items-center gap-3 px-4 py-3 bg-slate-900/50 rounded-2xl border transition-all ${searchMode ? 'border-teal-500/30 bg-slate-800' : 'border-slate-800'}`}>
+              <Search size={14} className={searchMode ? 'text-teal-400' : 'text-slate-500'} />
+              <input
+                placeholder="Search keywords..."
+                className="bg-transparent border-none focus:ring-0 text-[11px] font-black w-full placeholder-slate-700 text-white"
+                value={searchQuery}
+                onChange={(e) => { setSearchQuery(e.target.value); setSearchMode(!!e.target.value); }}
+              />
+            </div>
+          </section>
+
+          {/* Language Matrix */}
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Language Matrix</p>
+              <Languages size={12} className="text-slate-600" />
+            </div>
+            <div className="space-y-6">
+              <div className="bg-slate-950/50 p-4 rounded-2xl border border-white/5 hover:border-teal-500/20 transition-all">
+                <label className="text-[8px] font-black text-slate-600 uppercase block mb-2 tracking-widest">Doctor (Provider)</label>
+                <select
+                  value={doctorLang}
+                  onChange={(e) => setDoctorLang(e.target.value)}
+                  className="w-full bg-transparent border-none text-[11px] font-black focus:ring-0 p-0 text-white cursor-pointer"
+                >
+                  {LANGUAGES.map(l => <option key={l} value={l} className="bg-slate-900 text-sm">{l}</option>)}
+                </select>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-black text-xs truncate">Session #{conv.id}</p>
-                <div className="flex items-center gap-2 mt-1 opacity-50">
-                  <Clock size={10} />
-                  <p className="text-[10px] font-medium">{new Date(conv.created_at).toLocaleDateString()}</p>
+
+              <div className="flex justify-center -my-3 relative z-10">
+                <div className="bg-[#0f172a] p-2 rounded-full border border-white/5 shadow-2xl">
+                  <div className="bg-white/5 p-1.5 rounded-full">
+                    <RefreshCw size={10} className="text-slate-500" />
+                  </div>
                 </div>
               </div>
-              <button
-                onClick={(e) => { e.stopPropagation(); deleteSession(conv.id); }}
-                className="opacity-0 group-hover:opacity-100 p-2 hover:bg-red-500/20 hover:text-red-400 rounded-xl transition-all"
-              >
-                <Trash2 size={14} />
-              </button>
-            </button>
-          ))}
+
+              <div className="bg-slate-950/50 p-4 rounded-2xl border border-white/5 hover:border-indigo-500/20 transition-all">
+                <label className="text-[8px] font-black text-slate-600 uppercase block mb-2 tracking-widest">Patient (Receiver)</label>
+                <select
+                  value={patientLang}
+                  onChange={(e) => setPatientLang(e.target.value)}
+                  className="w-full bg-transparent border-none text-[11px] font-black focus:ring-0 p-0 text-white cursor-pointer"
+                >
+                  {LANGUAGES.map(l => <option key={l} value={l} className="bg-slate-900 text-sm">{l}</option>)}
+                </select>
+              </div>
+            </div>
+          </section>
+
+          {/* Consultation History */}
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Consultation History</p>
+              <History size={12} className="text-slate-600" />
+            </div>
+            <div className="space-y-2">
+              {conversations.map(conv => (
+                <button
+                  key={conv.id}
+                  onClick={() => setActiveConvId(conv.id)}
+                  className={`w-full text-left p-4 rounded-2xl transition-all flex items-center gap-4 group relative overflow-hidden ${activeConvId === conv.id ? 'bg-slate-800/50 border border-slate-700/50 text-white shadow-inner' : 'hover:bg-slate-800/30 text-slate-400 border border-transparent'}`}
+                >
+                  <div className={`p-2.5 rounded-xl ${activeConvId === conv.id ? 'bg-teal-500/20 text-teal-400' : 'bg-slate-800 text-slate-600 group-hover:bg-slate-700'}`}>
+                    <Calendar size={16} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-black text-xs truncate uppercase tracking-tighter">Session #{conv.id}</p>
+                    <div className="flex items-center gap-2 mt-1 opacity-50">
+                      <Clock size={10} />
+                      <p className="text-[10px] font-medium tracking-tight">{new Date(conv.created_at).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
         </div>
 
-        <div className="p-6">
-          <div className="bg-slate-800/30 p-5 rounded-2xl border border-slate-700/30 backdrop-blur-sm">
+        <div className="p-8 border-t border-white/5 space-y-6">
+          <button onClick={() => setConversations([])} className="flex items-center gap-3 text-slate-600 hover:text-red-400 transition-all group">
+            <Trash2 size={14} className="group-hover:animate-bounce" />
+            <span className="text-[9px] font-black uppercase tracking-[0.2em]">Purge History</span>
+          </button>
+          <div className="bg-slate-900/50 p-5 rounded-3xl border border-white/5">
             <div className="flex items-center gap-3 text-slate-500 mb-2">
               <Settings size={14} />
-              <p className="text-[10px] font-black uppercase tracking-wider">Engine Node 01</p>
+              <p className="text-[10px] font-black tracking-widest uppercase">Kernel Mode</p>
             </div>
             <p className="text-[11px] text-teal-400 font-black flex items-center gap-2">
-              <span className="w-2 h-2 bg-teal-500 rounded-full animate-ping" />
-              Llama-3 & Edge-TTS Online
+              <span className="w-2 h-2 bg-teal-500 rounded-full animate-pulse" />
+              Llama-3 & Edge Neural Bridge
             </p>
           </div>
         </div>
@@ -287,53 +346,46 @@ export default function NaoPortal() {
 
       {/* Modern High-End Chat Bridge */}
       <main className="flex-1 flex flex-col relative bg-[#020617] shadow-2xl">
-        <header className="h-24 border-b border-slate-800/50 px-10 flex items-center justify-between bg-[#020617]/80 backdrop-blur-2xl sticky top-0 z-10">
-          <div className="flex items-center gap-8">
-            <div className="flex bg-slate-900/80 p-1.5 rounded-2xl border border-slate-800">
-              <button
-                onClick={() => setViewRole('doctor')}
-                className={`flex items-center gap-2 px-8 py-3 rounded-xl text-xs font-black transition-all ${viewRole === 'doctor' ? 'bg-teal-600 text-white shadow-lg shadow-teal-900/40' : 'text-slate-500 hover:text-slate-300'}`}
-              >
-                <Stethoscope size={16} /> DOCTOR
-              </button>
-              <button
-                onClick={() => setViewRole('patient')}
-                className={`flex items-center gap-2 px-8 py-3 rounded-xl text-xs font-black transition-all ${viewRole === 'patient' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/40' : 'text-slate-500 hover:text-slate-300'}`}
-              >
-                <UserCircle size={16} /> PATIENT
-              </button>
+        <header className="h-28 border-b border-white/[0.03] px-10 flex items-center justify-between bg-[#020617]/90 backdrop-blur-3xl sticky top-0 z-10 transition-all duration-500">
+          <div className="flex flex-col">
+            <div className="flex items-center gap-3 mb-1">
+              <h2 className="text-2xl font-black text-white tracking-tight">Consultation</h2>
+              <div className="bg-teal-500/10 border border-teal-500/30 px-3 py-1 rounded-full flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-teal-500 rounded-full animate-pulse" />
+                <span className="text-[8px] font-black text-teal-400 uppercase tracking-widest leading-none pt-0.5">Neural Ready</span>
+              </div>
             </div>
-
-            <div className="hidden lg:flex items-center gap-4 px-5 py-3 bg-slate-900/50 rounded-2xl border border-slate-800">
-              <Languages size={16} className="text-teal-400" />
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Language Target:</span>
-              <select
-                value={targetLang}
-                onChange={(e) => setTargetLang(e.target.value)}
-                className="bg-transparent border-none text-[11px] font-black focus:ring-0 p-0 text-white cursor-pointer"
-              >
-                {['Spanish', 'French', 'German', 'Hindi', 'Arabic', 'Chinese', 'Japanese'].map(l => (
-                  <option key={l} value={l} className="bg-slate-900">{l}</option>
-                ))}
-              </select>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5 opacity-40">
+                <Check size={10} className="text-green-500" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-slate-300">Secure Bridge</span>
+              </div>
+              <span className="text-[10px] opacity-20 text-white">•</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Active Role:</span>
+                <span className={`text-[9px] font-black uppercase tracking-widest animate-in fade-in slide-in-from-left-2 ${viewRole === 'doctor' ? 'text-teal-400' : 'text-indigo-400'}`}>
+                  {viewRole}
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className={`flex items-center gap-3 px-5 py-3 rounded-2xl border transition-all duration-300 ${searchMode ? 'w-80 bg-slate-800 border-teal-500/50 shadow-[0_0_20px_rgba(20,184,166,0.1)]' : 'w-48 bg-slate-900/50 border-slate-800'}`}>
-              <Search size={14} className={searchMode ? 'text-teal-400' : 'text-slate-500'} />
-              <input
-                placeholder="Search clinical logs..."
-                className="bg-transparent border-none focus:ring-0 text-[11px] font-black w-full placeholder-slate-600 text-white"
-                value={searchQuery}
-                onChange={(e) => { setSearchQuery(e.target.value); setSearchMode(!!e.target.value); }}
-              />
-              {searchMode && (
-                <button onClick={() => { setSearchQuery(''); setSearchMode(false); }} className="text-slate-500 hover:text-white transition-colors">
-                  <RefreshCw size={12} />
-                </button>
-              )}
+          <div className="flex items-center gap-6">
+            <div className="flex border border-white/5 bg-white/[0.02] p-1.5 rounded-2xl backdrop-blur-md">
+              <button
+                onClick={() => setViewRole('doctor')}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-black transition-all ${viewRole === 'doctor' ? 'bg-teal-600 text-white shadow-xl shadow-teal-900/40' : 'text-slate-500 hover:text-white'}`}
+              >
+                <Stethoscope size={14} /> DOCTOR
+              </button>
+              <button
+                onClick={() => setViewRole('patient')}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-black transition-all ${viewRole === 'patient' ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-900/40' : 'text-slate-500 hover:text-white'}`}
+              >
+                <UserCircle size={14} /> PATIENT
+              </button>
             </div>
+
             <button
               onClick={async () => {
                 setLoading(true);
@@ -342,9 +394,9 @@ export default function NaoPortal() {
                   setSummary(res.data.summary);
                 } catch (e) { } finally { setLoading(false); }
               }}
-              className="flex items-center gap-2 bg-teal-500/10 text-teal-400 border border-teal-500/20 px-6 py-3 rounded-2xl text-[11px] font-black hover:bg-teal-500/20 transition-all active:scale-95"
+              className="bg-white/5 border border-white/10 hover:bg-white/10 px-6 py-4 rounded-2xl text-[10px] font-black tracking-widest transition-all active:scale-95 text-white flex gap-2 items-center"
             >
-              <FileText size={16} /> COMPILE SUMMARY
+              <FileText size={16} className="text-teal-400" /> COMPILE SUMMARY
             </button>
           </div>
         </header>
@@ -467,7 +519,7 @@ export default function NaoPortal() {
                         <div className="flex items-center gap-3">
                           <div className={`w-2 h-2 rounded-full ${isOwnMessage ? 'bg-slate-700' : 'bg-white/40'}`} />
                           <span className={`text-[10px] font-black uppercase tracking-[0.3em] ${isOwnMessage ? 'text-slate-500' : 'text-white/60'}`}>
-                            {displayInfo.lang} • {displayInfo.roleName}
+                            {displayInfo.roleName} INPUT • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
 
@@ -608,10 +660,19 @@ export default function NaoPortal() {
               </div>
             )}
           </div>
-          <div className="flex justify-center mt-8 space-x-12">
-            <p className="text-[10px] font-black text-slate-700 uppercase tracking-[0.6em]">Medical Compliance Grade A+</p>
-            <p className="text-[10px] font-black text-slate-700 uppercase tracking-[0.6em]">•</p>
-            <p className="text-[10px] font-black text-slate-700 uppercase tracking-[0.6em]">Encrypted Session Tunnel</p>
+          <div className="flex justify-center mt-12 space-x-12 opacity-30">
+            <div className="flex items-center gap-2">
+              <Clock size={10} />
+              <p className="text-[9px] font-black uppercase tracking-[0.4em]">Secure Log</p>
+            </div>
+            <div className="flex items-center gap-2 text-green-500">
+              <Check size={10} />
+              <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-200">HIPAA Ready</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Activity size={10} />
+              <p className="text-[9px] font-black uppercase tracking-[0.4em]">Neural Path</p>
+            </div>
           </div>
         </div>
       </main>

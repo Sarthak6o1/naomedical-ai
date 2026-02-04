@@ -73,14 +73,25 @@ async def translate_text(text: str, target_lang: str) -> dict:
     
     res_text = await call_openrouter(messages)
     
+    print(f"DEBUG: Translation Raw Response: {res_text}")
+    
     try:
         # Clean up JSON
-        if "```json" in res_text:
-            res_text = res_text.split("```json")[1].split("```")[0].strip()
-        elif "{" in res_text:
-            res_text = res_text[res_text.find("{"):res_text.rfind("}")+1]
-        return json.loads(res_text)
-    except:
+        clean_text = res_text
+        if "```json" in clean_text:
+            clean_text = clean_text.split("```json")[1].split("```")[0]
+        elif "```" in clean_text:
+            clean_text = clean_text.split("```")[1].split("```")[0]
+            
+        if "{" in clean_text:
+            clean_text = clean_text[clean_text.find("{"):clean_text.rfind("}")+1]
+            
+        return json.loads(clean_text)
+    except Exception as e:
+        print(f"ERROR: Translation JSON Parse Failed: {e}. Raw: {res_text}")
+        # Fallback: if we can't parse JSON, assume the whole response might be the translation if it's short
+        if len(res_text) < len(text) * 3 and "{" not in res_text:
+             return {"translated_text": res_text.strip(), "detected_language": "Unknown"}
         return {"translated_text": text, "detected_language": "Unknown"}
 
 async def generate_summary(history: list) -> str:

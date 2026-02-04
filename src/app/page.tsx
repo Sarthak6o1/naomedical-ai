@@ -275,9 +275,9 @@ export default function NaoPortal() {
                 setSummary(res.data.summary);
               } catch (e) { } finally { setLoading(false); }
             }}
-            className="w-full bg-white/5 border border-white/10 hover:bg-white/10 px-4 py-3 rounded-xl text-[10px] font-black tracking-widest transition-all active:scale-95 text-white flex gap-3 items-center justify-center mb-6 group"
+            className="w-full bg-slate-900/40 hover:bg-teal-500/10 border border-white/5 hover:border-teal-500/30 px-4 py-3.5 rounded-2xl text-[10px] font-black tracking-widest transition-all active:scale-95 text-slate-400 hover:text-white flex gap-3 items-center justify-center mb-8 group"
           >
-            <FileText size={14} className="text-teal-400 group-hover:scale-110 transition-transform" />
+            <FileText size={14} className="text-teal-500/60 group-hover:text-teal-400 transition-colors" />
             GENERATE SUMMARY
           </button>
 
@@ -352,15 +352,15 @@ export default function NaoPortal() {
         </div>
       </aside>
 
-      {/* Role Selection Modal - Only shows on first load */}
+      {/* Role Selection Modal */}
       <AnimatePresence>
-        {!roleSelected && (
+        {(!roleSelected || showRoleSelector) && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-8"
-            onClick={() => setShowRoleSelector(false)}
+            onClick={() => { if (roleSelected) setShowRoleSelector(false); }}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}

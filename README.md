@@ -2,7 +2,7 @@
 
 An advanced, clinical-grade Doctor-Patient Translation Hub designed for seamless, real-time medical consultations. Powered by the latest multimodal AI models and a premium, high-fidelity dark interface.
 
-![Medical Dashboard](./public/assets/dashboard.png)
+![Medical Dashboard](./public/assets/Screenshot%202026-02-04%20194859.png)
 
 ## 🚀 Live Access
 **Portal URL:** [https://naomedical-ai.vercel.app/](https://naomedical-ai.vercel.app/)
@@ -30,7 +30,7 @@ An advanced, clinical-grade Doctor-Patient Translation Hub designed for seamless
 - Click the **`+ NEW SESSION`** button on the left sidebar to open a dedicated, encrypted consultation tunnel.
 - **Select Role**: Choose your access level (Doctor or Patient) with the high-end role selector.
 
-![Role Selection](./public/assets/roles.png)
+![Role Selection](./public/assets/Screenshot%202026-02-04%20194932.png)
 
 ### 2. Configure Language Target
 - Use the **`LANGUAGE TARGET`** dropdown at the top to select the patient's primary language (e.g., Spanish, French, Japanese).
@@ -41,17 +41,20 @@ An advanced, clinical-grade Doctor-Patient Translation Hub designed for seamless
 
 | Doctor View | Patient View |
 | :---: | :---: |
-| ![Doctor Chat](./public/assets/chat-doctor.png) | ![Patient Chat](./public/assets/chat-patient.png) |
+| ![Doctor Chat](./public/assets/Screenshot%202026-02-04%20195140.png) | ![Patient Chat](./public/assets/Screenshot%202026-02-04%20195159.png) |
 
-### 4. Search & Retrieve
-- Use the **Search Bar** in the header to find specific medical terms. Results will be highlighted in vibrant teal for quick clinical reference.
+### 4. Search & History
+- Use the **Search Bar** in the header to find specific medical terms.
+- **Session Archive**: View past encounters in the sidebar (screenshot #7).
 
-![Search Interface](./public/assets/search.png)
+| Search Interface | Archive View |
+| :---: | :---: |
+| ![Search Interface](./public/assets/Screenshot%202026-02-04%20195720.png) | ![Archive View](./public/assets/Screenshot%202026-02-04%20195911.png) |
 
 ### 5. Finalize Documentation
 - Once the consultation is complete, click **`COMPILE SUMMARY`**. This uses AI to parse the entire transcript into a structured medical report which can be copied directly into your EHR (Electronic Health Record) system.
 
-![Summary Report](./public/assets/summary.png)
+![Summary Report](./public/assets/Screenshot%202026-02-04%20195330.png)
 
 ---
 

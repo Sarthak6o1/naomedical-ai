@@ -17,6 +17,9 @@ An advanced, clinical-grade Doctor-Patient Translation Hub designed for seamless
 | **Structured Summarization** | One-click generation of professional Clinical Encounter Reports (Symptoms, Diagnosis, Plan, etc.). |
 | **Smart Search** | Encrypted message logging with interactive keyword highlighting and persistent consultation history. |
 
+> [!IMPORTANT]
+> **Technical Note on Free Tier Quotas**: This application utilizes free-tier AI models via OpenRouter. If the "Clinical Summary" returns a blank output, it is likely due to the model's rate limit or daily token quota for free requests being reached. The core translation and audio features remain prioritized and functional.
+
 ---
 
 ## 📖 Simple Usage Guide

@@ -505,19 +505,7 @@ export default function NaoPortal() {
                 </div>
 
                 <div className="flex items-center gap-6">
-                  <div className="flex border border-white/5 bg-white/[0.02] p-1.5 rounded-2xl backdrop-blur-md">
-                    <button
-                      onClick={() => setViewRole('doctor')}
-                      className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-black transition-all ${viewRole === 'doctor' ? 'bg-teal-600 text-white shadow-xl shadow-teal-900/40' : 'text-slate-500 hover:text-white'}`}
-                    >
-                      <Stethoscope size={14} /> DOCTOR
-                    </button>
-                    <button
-                      onClick={() => setViewRole('patient')}
-                      className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-black transition-all ${viewRole === 'patient' ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-900/40' : 'text-slate-500 hover:text-white'}`}
-                    >
-                      <UserCircle size={14} /> PATIENT
-                    </button>
+                  <div className="flex border border-white/5 bg-white/[0.02] p-1.5 rounded-2xl backdrop-blur-md opacity-0 pointer-events-none">
                   </div>
 
                   <button
@@ -666,17 +654,15 @@ export default function NaoPortal() {
                                   >
                                     <RefreshCw size={14} strokeWidth={3} />
                                   </button>
-                                  {viewRole === 'doctor' && (
-                                    <select
-                                      className="bg-white/10 border-none text-[10px] font-black px-3 py-1.5 rounded-xl focus:ring-0 cursor-pointer"
-                                      onChange={(e) => regenerateAudio(msg.id, e.target.value)}
-                                      defaultValue={msg.language}
-                                    >
-                                      {['English', 'Spanish', 'French', 'German', 'Hindi'].map(l => (
-                                        <option key={l} value={l} className="bg-[#0f172a]">{l.slice(0, 2).toUpperCase()}</option>
-                                      ))}
-                                    </select>
-                                  )}
+                                  <select
+                                    className="bg-white/10 border-none text-[10px] font-black px-3 py-1.5 rounded-xl focus:ring-0 cursor-pointer"
+                                    onChange={(e) => regenerateAudio(msg.id, e.target.value)}
+                                    defaultValue={msg.language}
+                                  >
+                                    {LANGUAGES.map(l => (
+                                      <option key={l} value={l} className="bg-[#0f172a]">{l.toUpperCase()}</option>
+                                    ))}
+                                  </select>
                                 </div>
                               )}
                             </div>

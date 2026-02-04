@@ -22,8 +22,17 @@ async def list_conversations(db: Session = Depends(get_db)):
 
 @router.delete("/conversations/{conv_id}")
 async def delete_conversation(conv_id: int, db: Session = Depends(get_db)):
-    db.query(Message).filter(Message.conversation_id == conv_id).delete()
-    db.query(Conversation).filter(Conversation.id == conv_id).delete()
+    # Verify existence first
+    conv = db.query(Conversation).filter(Conversation.id == conv_id).first()
+    if not conv:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+
+    # Delete associated messages first
+    db.query(Message).filter(Message.conversation_id == conv_id).delete(synchronize_session=False)
+    
+    # Delete the conversation
+    db.query(Conversation).filter(Conversation.id == conv_id).delete(synchronize_session=False)
+    
     db.commit()
     return {"status": "deleted"}
 

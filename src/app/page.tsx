@@ -120,10 +120,6 @@ export default function NaoPortal() {
   };
 
   const createNewSession = async () => {
-    if (!roleSelected) {
-      setShowRoleSelector(true);
-      return;
-    }
     try {
       const res = await axios.post(`${API_BASE}/conversations`);
       setConversations([res.data, ...conversations]);
@@ -138,7 +134,6 @@ export default function NaoPortal() {
   const selectRoleAndCreateSession = async (role: 'doctor' | 'patient') => {
     setViewRole(role);
     setRoleSelected(true);
-    setShowRoleSelector(false);
     try {
       const res = await axios.post(`${API_BASE}/conversations`);
       setConversations([res.data, ...conversations]);
@@ -288,45 +283,6 @@ export default function NaoPortal() {
             </div>
           </section>
 
-          {/* Language Matrix */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Language Matrix</p>
-              <Languages size={12} className="text-slate-600" />
-            </div>
-            <div className="space-y-6">
-              <div className="bg-slate-950/50 p-4 rounded-2xl border border-white/5 hover:border-teal-500/20 transition-all">
-                <label className="text-[8px] font-black text-slate-600 uppercase block mb-2 tracking-widest">Doctor (Provider)</label>
-                <select
-                  value={doctorLang}
-                  onChange={(e) => setDoctorLang(e.target.value)}
-                  className="w-full bg-transparent border-none text-[11px] font-black focus:ring-0 p-0 text-white cursor-pointer"
-                >
-                  {LANGUAGES.map(l => <option key={l} value={l} className="bg-slate-900 text-sm">{l}</option>)}
-                </select>
-              </div>
-
-              <div className="flex justify-center -my-3 relative z-10">
-                <div className="bg-[#0f172a] p-2 rounded-full border border-white/5 shadow-2xl">
-                  <div className="bg-white/5 p-1.5 rounded-full">
-                    <RefreshCw size={10} className="text-slate-500" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-slate-950/50 p-4 rounded-2xl border border-white/5 hover:border-indigo-500/20 transition-all">
-                <label className="text-[8px] font-black text-slate-600 uppercase block mb-2 tracking-widest">Patient (Receiver)</label>
-                <select
-                  value={patientLang}
-                  onChange={(e) => setPatientLang(e.target.value)}
-                  className="w-full bg-transparent border-none text-[11px] font-black focus:ring-0 p-0 text-white cursor-pointer"
-                >
-                  {LANGUAGES.map(l => <option key={l} value={l} className="bg-slate-900 text-sm">{l}</option>)}
-                </select>
-              </div>
-            </div>
-          </section>
-
           {/* Consultation History */}
           <section>
             <div className="flex items-center justify-between mb-4">
@@ -381,9 +337,9 @@ export default function NaoPortal() {
         </div>
       </aside>
 
-      {/* Role Selection Modal */}
+      {/* Role Selection Modal - Only shows on first load */}
       <AnimatePresence>
-        {showRoleSelector && (
+        {!roleSelected && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -485,7 +441,7 @@ export default function NaoPortal() {
                 <motion.button
                   whileHover={{ y: -10, scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => { setViewRole('doctor'); createNewSession(); }}
+                  onClick={() => selectRoleAndCreateSession('doctor')}
                   className="flex-1 group"
                 >
                   <div className="h-full bg-slate-900/40 border border-white/5 p-12 rounded-[3.5rem] flex flex-col items-center gap-8 transition-all group-hover:bg-teal-600/10 group-hover:border-teal-500/30 group-hover:shadow-[0_0_80px_rgba(20,184,166,0.1)]">
@@ -502,7 +458,7 @@ export default function NaoPortal() {
                 <motion.button
                   whileHover={{ y: -10, scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => { setViewRole('patient'); createNewSession(); }}
+                  onClick={() => selectRoleAndCreateSession('patient')}
                   className="flex-1 group"
                 >
                   <div className="h-full bg-slate-900/40 border border-white/5 p-12 rounded-[3.5rem] flex flex-col items-center gap-8 transition-all group-hover:bg-indigo-600/10 group-hover:border-indigo-500/30 group-hover:shadow-[0_0_80px_rgba(79,70,229,0.1)]">

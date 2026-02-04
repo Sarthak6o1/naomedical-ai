@@ -3,7 +3,11 @@ from sqlalchemy.orm import sessionmaker
 import os
 from backend.app.models.base import Base
 
-DATABASE_URL = "sqlite:///./naomedical.db"
+IS_VERCEL = "VERCEL" in os.environ
+if IS_VERCEL:
+    DATABASE_URL = "sqlite:////tmp/naomedical.db"
+else:
+    DATABASE_URL = "sqlite:///./naomedical.db"
 
 engine = create_engine(
     DATABASE_URL, 

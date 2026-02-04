@@ -522,9 +522,9 @@ export default function NaoPortal() {
                 <div className="flex items-center gap-6">
                   <div className="flex items-center gap-4">
                     <button
-                      onClick={() => setShowRoleSelector(true)}
+                      onClick={() => setViewRole(viewRole === 'doctor' ? 'patient' : 'doctor')}
                       className="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 transition-all font-black text-[10px] text-slate-400 hover:text-white tracking-widest uppercase"
-                      title="Switch Operation Mode"
+                      title={`Switch to ${viewRole === 'doctor' ? 'Patient' : 'Doctor'} View`}
                     >
                       <RefreshCw size={12} className="group-hover:rotate-180 transition-transform duration-500" />
                       Switch Profile

@@ -41,7 +41,7 @@ An advanced, clinical-grade Doctor-Patient Translation Hub designed for seamless
 
 | Doctor View | Patient View |
 | :---: | :---: |
-| ![Doctor Chat](./public/assets/Screenshot%202026-02-04%20195140.png) | ![Patient Chat](./public/assets/Screenshot%202026-02-04%20195159.png) |
+| ![Doctor Chat](./public/assets/Screenshot%202026-02-04%20195330.png) | ![Patient Chat](./public/assets/Screenshot%202026-02-04%20195159.png) |
 
 ### 4. Search & History
 - Use the **Search Bar** in the header to find specific medical terms.
@@ -53,8 +53,8 @@ An advanced, clinical-grade Doctor-Patient Translation Hub designed for seamless
 
 ### 5. Finalize Documentation
 - Once the consultation is complete, click **`COMPILE SUMMARY`**. This uses AI to parse the entire transcript into a structured medical report which can be copied directly into your EHR (Electronic Health Record) system.
-
-![Summary Report](./public/assets/Screenshot%202026-02-04%20195330.png)
+./public/assets/Screenshot%202026-02-04%20195330.png
+![Summary Report](./public/assets/Screenshot%202026-02-04%20195140.png)
 
 ---
 

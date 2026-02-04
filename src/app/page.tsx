@@ -252,7 +252,7 @@ export default function NaoPortal() {
       const res = await axios.post(`${API_BASE}/messages/${msgId}/regenerate`, null, {
         params: { target_lang: lang }
       });
-      setMessages(messages.map(m => m.id === msgId ? res.data : m));
+      setMessages(prevMessages => prevMessages.map(m => m.id === msgId ? res.data : m));
     } catch (err) {
       console.error("Regeneration failed", err);
     } finally {

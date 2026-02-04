@@ -87,6 +87,16 @@ async def summarize_conversation(conv_id: int, db: Session = Depends(get_db)):
         db.commit()
     return {"summary": summary}
 
+@router.patch("/conversations/{conv_id}")
+async def update_conversation(conv_id: int, title: str, db: Session = Depends(get_db)):
+    conv = db.query(Conversation).filter(Conversation.id == conv_id).first()
+    if not conv:
+        raise HTTPException(status_code=404, detail="Conversation not found")
+    conv.title = title
+    db.commit()
+    db.refresh(conv)
+    return conv
+
 @router.get("/search")
 async def search_conversations(q: str, db: Session = Depends(get_db)):
     return db.query(Message).filter(

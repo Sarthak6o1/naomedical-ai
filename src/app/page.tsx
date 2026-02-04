@@ -63,6 +63,8 @@ export default function NaoPortal() {
   const [loading, setLoading] = useState(false);
   const [searchMode, setSearchMode] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showRoleSelector, setShowRoleSelector] = useState(false);
+  const [roleSelected, setRoleSelected] = useState(false);
 
   const LANGUAGES = ["English", "Spanish", "French", "Arabic", "Japanese", "German", "Mandarin", "Portuguese", "Hindi", "Russian"];
 
@@ -118,6 +120,25 @@ export default function NaoPortal() {
   };
 
   const createNewSession = async () => {
+    if (!roleSelected) {
+      setShowRoleSelector(true);
+      return;
+    }
+    try {
+      const res = await axios.post(`${API_BASE}/conversations`);
+      setConversations([res.data, ...conversations]);
+      setActiveConvId(res.data.id);
+      setMessages([]);
+      setSummary(null);
+    } catch (err) {
+      console.error("Failed to create session", err);
+    }
+  };
+
+  const selectRoleAndCreateSession = async (role: 'doctor' | 'patient') => {
+    setViewRole(role);
+    setRoleSelected(true);
+    setShowRoleSelector(false);
     try {
       const res = await axios.post(`${API_BASE}/conversations`);
       setConversations([res.data, ...conversations]);
@@ -360,10 +381,86 @@ export default function NaoPortal() {
         </div>
       </aside>
 
+      {/* Role Selection Modal */}
+      <AnimatePresence>
+        {showRoleSelector && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-8"
+            onClick={() => setShowRoleSelector(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="max-w-5xl w-full"
+            >
+              <div className="text-center mb-12">
+                <motion.div
+                  initial={{ y: -20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                  className="inline-block bg-teal-500/10 border border-teal-500/20 px-6 py-2 rounded-full text-[10px] font-black tracking-[0.5em] text-teal-400 mb-6 uppercase"
+                >
+                  MedBridge Protocol v4.2
+                </motion.div>
+                <h2 className="text-5xl font-black text-white tracking-tighter mb-4">Select Your Role</h2>
+                <p className="text-slate-500 font-medium max-w-md mx-auto leading-relaxed">Choose your access level to begin the encrypted medical dialogue.</p>
+              </div>
+
+              <div className="flex gap-8">
+                <motion.button
+                  whileHover={{ y: -10, scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => selectRoleAndCreateSession('doctor')}
+                  className="flex-1 group"
+                >
+                  <div className="h-full bg-gradient-to-br from-slate-900/60 to-slate-950/80 border border-white/10 p-12 rounded-[3.5rem] flex flex-col items-center gap-8 transition-all duration-300 group-hover:bg-teal-600/10 group-hover:border-teal-500/30 group-hover:shadow-[0_0_80px_rgba(20,184,166,0.2)] backdrop-blur-xl">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-teal-500 blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+                      <div className="relative w-24 h-24 bg-gradient-to-br from-teal-600 to-teal-500 rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-teal-900/40 group-hover:scale-110 transition-transform duration-300">
+                        <Stethoscope size={40} className="text-white" />
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <h3 className="text-2xl font-black text-white mb-2">Healthcare Provider</h3>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest group-hover:text-teal-400 transition-colors">Physician Access</p>
+                    </div>
+                  </div>
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ y: -10, scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => selectRoleAndCreateSession('patient')}
+                  className="flex-1 group"
+                >
+                  <div className="h-full bg-gradient-to-br from-slate-900/60 to-slate-950/80 border border-white/10 p-12 rounded-[3.5rem] flex flex-col items-center gap-8 transition-all duration-300 group-hover:bg-indigo-600/10 group-hover:border-indigo-500/30 group-hover:shadow-[0_0_80px_rgba(79,70,229,0.2)] backdrop-blur-xl">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-indigo-500 blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
+                      <div className="relative w-24 h-24 bg-gradient-to-br from-indigo-600 to-indigo-500 rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-indigo-900/40 group-hover:scale-110 transition-transform duration-300">
+                        <UserCircle size={40} className="text-white" />
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <h3 className="text-2xl font-black text-white mb-2">Care Recipient</h3>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest group-hover:text-indigo-400 transition-colors">Patient Access</p>
+                    </div>
+                  </div>
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Modern High-End Chat Bridge */}
       <main className="flex-1 flex flex-col relative bg-[#020617] shadow-2xl">
         <AnimatePresence mode="wait">
-          {!activeConvId ? (
+          {!activeConvId && !roleSelected ? (
             <motion.div
               key="landing"
               initial={{ opacity: 0 }}

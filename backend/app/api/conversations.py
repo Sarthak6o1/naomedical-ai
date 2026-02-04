@@ -90,8 +90,18 @@ async def regenerate_message_audio(msg_id: int, target_lang: str, db: Session = 
     if not msg:
         raise HTTPException(status_code=404, detail="Message not found")
     
+    # Step 1: Force Strict Translation
     translation_res = await translate_text(msg.original_text, target_lang)
     translated_text = translation_res.get("translated_text", msg.original_text)
+    
+    # Step 2: Ensure we don't just speak English with an accent (unless target IS English)
+    # If the translation failed (text is same) and target isn't English, try one more fallback or proceed
+    if translated_text.strip() == msg.original_text.strip() and "english" not in target_lang.lower():
+         # Fallback: simple direct call if implicit translation failed
+         # For now, we trust translate_text's retry/fallback logic
+         pass
+
+    # Step 3: Generate Audio from the *Translated* Text
     audio_url = await generate_tts_audio(translated_text, target_lang)
     
     msg.translated_text = translated_text

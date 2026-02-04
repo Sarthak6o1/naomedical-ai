@@ -65,6 +65,8 @@ export default function NaoPortal() {
   const [copied, setCopied] = useState(false);
   const [showRoleSelector, setShowRoleSelector] = useState(false);
   const [roleSelected, setRoleSelected] = useState(false);
+  const [refreshingMessageId, setRefreshingMessageId] = useState<number | null>(null);
+
 
   const LANGUAGES = ["English", "Spanish", "French", "Arabic", "Japanese", "German", "Mandarin", "Portuguese", "Hindi", "Russian"];
 
@@ -217,7 +219,7 @@ export default function NaoPortal() {
   };
 
   const regenerateAudio = async (msgId: number, lang: string) => {
-    setLoading(true);
+    setRefreshingMessageId(msgId);
     try {
       const res = await axios.post(`${API_BASE}/messages/${msgId}/regenerate`, null, {
         params: { target_lang: lang }
@@ -226,7 +228,7 @@ export default function NaoPortal() {
     } catch (err) {
       console.error("Regeneration failed", err);
     } finally {
-      setLoading(false);
+      setRefreshingMessageId(null);
     }
   };
 
@@ -659,47 +661,63 @@ export default function NaoPortal() {
 
                               {!isOwnMessage && (
                                 <div className="flex items-center gap-3">
-                                  <button
-                                    onClick={() => regenerateAudio(msg.id, msg.language)}
-                                    className="p-2 hover:bg-white/20 rounded-xl transition-all active:scale-90"
-                                    title="Redraw AI Output"
-                                  >
-                                    <RefreshCw size={14} strokeWidth={3} />
-                                  </button>
-                                  <select
-                                    className={`appearance-none border-none text-[10px] font-black px-4 py-2 rounded-xl focus:ring-0 cursor-pointer transition-colors ${viewRole === 'doctor'
-                                      ? 'bg-teal-700/50 hover:bg-teal-700 text-teal-100'
-                                      : 'bg-indigo-700/50 hover:bg-indigo-700 text-indigo-100'
-                                      }`}
-                                    onChange={(e) => regenerateAudio(msg.id, e.target.value)}
-                                    defaultValue={msg.language}
-                                  >
-                                    {LANGUAGES.map(l => (
-                                      <option key={l} value={l} className="bg-slate-900 text-slate-200">{l.toUpperCase()}</option>
-                                    ))}
-                                  </select>
+                                  {refreshingMessageId === msg.id ? (
+                                    <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-xl">
+                                      <div className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                      <span className="text-[9px] font-black uppercase tracking-widest">Updating...</span>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <button
+                                        onClick={() => regenerateAudio(msg.id, msg.language)}
+                                        className="p-2 hover:bg-white/20 rounded-xl transition-all active:scale-90"
+                                        title="Redraw AI Output"
+                                      >
+                                        <RefreshCw size={14} strokeWidth={3} />
+                                      </button>
+                                      <select
+                                        className={`appearance-none border-none text-[10px] font-black px-4 py-2 rounded-xl focus:ring-0 cursor-pointer transition-colors ${viewRole === 'doctor'
+                                          ? 'bg-teal-700/50 hover:bg-teal-700 text-teal-100'
+                                          : 'bg-indigo-700/50 hover:bg-indigo-700 text-indigo-100'
+                                          }`}
+                                        onChange={(e) => regenerateAudio(msg.id, e.target.value)}
+                                        defaultValue={msg.language}
+                                      >
+                                        {LANGUAGES.map(l => (
+                                          <option key={l} value={l} className="bg-slate-900 text-slate-200">{l.toUpperCase()}</option>
+                                        ))}
+                                      </select>
+                                    </>
+                                  )}
                                 </div>
                               )}
                             </div>
 
                             <div className="mb-6 relative">
                               {/* Highlighting logic */}
-                              {(() => {
-                                const text = displayInfo.text;
-                                const query = searchQuery.trim();
-                                if (!searchMode || !query) return (
-                                  <p className="text-lg font-bold leading-relaxed tracking-tight tracking-[-0.01em]">
-                                    {text}
-                                  </p>
-                                );
-                                const parts = text.split(new RegExp(`(${query})`, 'gi'));
-                                return (
-                                  <p className="text-lg font-bold leading-relaxed tracking-tight">
-                                    {parts.map((p, i) => p.toLowerCase() === query.toLowerCase()
-                                      ? <span key={i} className="bg-teal-400 text-black px-1 rounded-md">{p}</span> : p)}
-                                  </p>
-                                );
-                              })()}
+                              {refreshingMessageId === msg.id ? (
+                                <div className="h-10 flex items-center gap-3 opacity-50">
+                                  <Activity size={16} className="animate-pulse" />
+                                  <span className="text-xs font-bold tracking-widest uppercase">Updating Compliance...</span>
+                                </div>
+                              ) : (
+                                (() => {
+                                  const text = displayInfo.text;
+                                  const query = searchQuery.trim();
+                                  if (!searchMode || !query) return (
+                                    <p className="text-lg font-bold leading-relaxed tracking-tight tracking-[-0.01em]">
+                                      {text}
+                                    </p>
+                                  );
+                                  const parts = text.split(new RegExp(`(${query})`, 'gi'));
+                                  return (
+                                    <p className="text-lg font-bold leading-relaxed tracking-tight">
+                                      {parts.map((p, i) => p.toLowerCase() === query.toLowerCase()
+                                        ? <span key={i} className="bg-teal-400 text-black px-1 rounded-md">{p}</span> : p)}
+                                    </p>
+                                  );
+                                })()
+                              )}
                             </div>
 
                             {/* Explicit Audio Controls Section */}

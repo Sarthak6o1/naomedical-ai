@@ -197,7 +197,7 @@ export default function NaoPortal() {
       const res = await axios.post(`${API_BASE}/conversations/${activeConvId}/messages`, null, {
         params: { role: viewRole, text: inputText, target_lang: actualTargetLang }
       });
-      setMessages([...messages, res.data]);
+      setMessages(prev => [...prev, res.data]);
       setInputText('');
     } catch (err) {
       console.error("Send failed", err);

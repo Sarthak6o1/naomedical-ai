@@ -314,12 +314,18 @@ export default function NaoPortal() {
                     <Calendar size={16} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-black text-xs truncate uppercase tracking-tighter">Session #{conv.id}</p>
+                    <p className="font-black text-xs truncate uppercase tracking-tighter">Encounter #{conv.id}</p>
                     <div className="flex items-center gap-2 mt-1 opacity-50">
                       <Clock size={10} />
                       <p className="text-[10px] font-medium tracking-tight">{new Date(conv.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); deleteSession(conv.id); }}
+                    className="opacity-0 group-hover:opacity-100 p-2 hover:bg-red-500/20 hover:text-red-400 rounded-xl transition-all"
+                  >
+                    <Trash2 size={14} />
+                  </button>
                 </button>
               ))}
             </div>
@@ -329,16 +335,16 @@ export default function NaoPortal() {
         <div className="p-8 border-t border-white/5 space-y-6">
           <button onClick={() => setConversations([])} className="flex items-center gap-3 text-slate-600 hover:text-red-400 transition-all group">
             <Trash2 size={14} className="group-hover:animate-bounce" />
-            <span className="text-[9px] font-black uppercase tracking-[0.2em]">Purge History</span>
+            <span className="text-[9px] font-black uppercase tracking-[0.2em]">Clear Archive</span>
           </button>
           <div className="bg-slate-900/50 p-5 rounded-3xl border border-white/5">
             <div className="flex items-center gap-3 text-slate-500 mb-2">
               <Settings size={14} />
-              <p className="text-[10px] font-black tracking-widest uppercase">Kernel Mode</p>
+              <p className="text-[10px] font-black tracking-widest uppercase">System Core</p>
             </div>
             <p className="text-[11px] text-teal-400 font-black flex items-center gap-2">
               <span className="w-2 h-2 bg-teal-500 rounded-full animate-pulse" />
-              Llama-3 & Edge Neural Bridge
+              OpenRouter AI • Edge Voice
             </p>
           </div>
         </div>
@@ -362,10 +368,10 @@ export default function NaoPortal() {
                   transition={{ delay: 0.2 }}
                   className="inline-block bg-teal-500/10 border border-teal-500/20 px-6 py-2 rounded-full text-[10px] font-black tracking-[0.5em] text-teal-400 mb-6 uppercase"
                 >
-                  Neural Gateway v3.0
+                  MedBridge Protocol v4.2
                 </motion.div>
-                <h2 className="text-5xl font-black text-white tracking-tighter mb-4">Select Consultation Perspective</h2>
-                <p className="text-slate-500 font-medium max-w-md mx-auto leading-relaxed">Initiate a secure clinical encounter by selecting your operational role.</p>
+                <h2 className="text-5xl font-black text-white tracking-tighter mb-4">Initialize Care Session</h2>
+                <p className="text-slate-500 font-medium max-w-md mx-auto leading-relaxed">Begin encrypted medical dialogue by choosing your access level.</p>
               </div>
 
               <div className="flex gap-8 w-full max-w-5xl">
@@ -380,8 +386,8 @@ export default function NaoPortal() {
                       <Stethoscope size={40} className="text-white" />
                     </div>
                     <div className="text-center">
-                      <h3 className="text-2xl font-black text-white mb-2">Clinical Provider</h3>
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest group-hover:text-teal-400">Doctor Mode</p>
+                      <h3 className="text-2xl font-black text-white mb-2">Healthcare Authority</h3>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest group-hover:text-teal-400">Physician Portal</p>
                     </div>
                   </div>
                 </motion.button>
@@ -397,8 +403,8 @@ export default function NaoPortal() {
                       <UserCircle size={40} className="text-white" />
                     </div>
                     <div className="text-center">
-                      <h3 className="text-2xl font-black text-white mb-2">Testimony Input</h3>
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest group-hover:text-indigo-400">Patient Mode</p>
+                      <h3 className="text-2xl font-black text-white mb-2">Care Recipient</h3>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest group-hover:text-indigo-400">Client Interface</p>
                     </div>
                   </div>
                 </motion.button>
@@ -417,7 +423,7 @@ export default function NaoPortal() {
                     <h2 className="text-2xl font-black text-white tracking-tight">Consultation</h2>
                     <div className="bg-teal-500/10 border border-teal-500/30 px-3 py-1 rounded-full flex items-center gap-2">
                       <span className="w-1.5 h-1.5 bg-teal-500 rounded-full animate-pulse" />
-                      <span className="text-[8px] font-black text-teal-400 uppercase tracking-widest leading-none pt-0.5">Neural Ready</span>
+                      <span className="text-[8px] font-black text-teal-400 uppercase tracking-widest leading-none pt-0.5">AI Standby</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -728,15 +734,15 @@ export default function NaoPortal() {
                 <div className="flex justify-center mt-12 space-x-12 opacity-30">
                   <div className="flex items-center gap-2">
                     <Clock size={10} />
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em]">Secure Log</p>
+                    <p className="text-[9px] font-black uppercase tracking-[0.4em]">Timestamped</p>
                   </div>
                   <div className="flex items-center gap-2 text-green-500">
                     <Check size={10} />
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-200">HIPAA Ready</p>
+                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-200">PHI Compliant</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Activity size={10} />
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em]">Neural Path</p>
+                    <p className="text-[9px] font-black uppercase tracking-[0.4em]">Live Pipeline</p>
                   </div>
                 </div>
               </div>

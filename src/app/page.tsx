@@ -284,13 +284,13 @@ export default function NaoPortal() {
           {/* Search Records */}
           <section>
             <div className="flex items-center justify-between mb-4">
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.25em]">Query Archive</p>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.25em]">Search</p>
               <Search size={11} className="text-slate-600" />
             </div>
             <div className={`flex items-center gap-3 px-4 py-3.5 bg-slate-950/60 rounded-2xl border backdrop-blur-sm transition-all duration-300 ${searchMode ? 'border-teal-500/40 bg-slate-900/80 shadow-[0_0_20px_rgba(20,184,166,0.15)]' : 'border-white/5 hover:border-white/10'}`}>
               <Search size={14} className={`transition-colors ${searchMode ? 'text-teal-400' : 'text-slate-500'}`} />
               <input
-                placeholder="Search encounters..."
+                placeholder="Search history..."
                 className="bg-transparent border-none focus:ring-0 text-[11px] font-semibold w-full placeholder-slate-600 text-white"
                 value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); setSearchMode(!!e.target.value); }}

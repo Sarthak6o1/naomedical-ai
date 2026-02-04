@@ -88,9 +88,12 @@ export default function NaoPortal() {
     fetchConversations().then((convs) => {
       if (storedConvId && convs.some((c: Conversation) => c.id === parseInt(storedConvId))) {
         setActiveConvId(parseInt(storedConvId));
-      } else if (convs.length > 0 && !storedConvId) {
+      } else if (convs.length > 0) {
         // Default behavior if nothing stored
         setActiveConvId(convs[0].id);
+      } else {
+        // AUTO-CREATE if no sessions exist at all
+        createNewSession();
       }
     });
   }, []);

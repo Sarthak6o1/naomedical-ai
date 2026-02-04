@@ -65,7 +65,7 @@ export default function NaoPortal() {
   const [searchMode, setSearchMode] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showRoleSelector, setShowRoleSelector] = useState(false);
-  const [roleSelected, setRoleSelected] = useState(false);
+  const [roleSelected, setRoleSelected] = useState<boolean | null>(null); // Use null for 'loading' state if needed, or stick to false
   const [refreshingMessageId, setRefreshingMessageId] = useState<number | null>(null);
 
 
@@ -83,18 +83,22 @@ export default function NaoPortal() {
     const storedRoleSelected = localStorage.getItem('naomed_roleSelected');
 
     if (storedRole) setViewRole(storedRole as 'doctor' | 'patient');
-    if (storedRoleSelected === 'true') setRoleSelected(true);
 
     // Fetch conversations and then set active ID
     fetchConversations().then((convs) => {
+      const has_conversations = convs.length > 0;
+      const role_already_picked = storedRoleSelected === 'true';
+
       if (storedConvId && convs.some((c: Conversation) => c.id === parseInt(storedConvId))) {
         setActiveConvId(parseInt(storedConvId));
-      } else if (convs.length > 0) {
-        // Default behavior if nothing stored
+        setRoleSelected(role_already_picked);
+      } else if (has_conversations) {
         setActiveConvId(convs[0].id);
+        setRoleSelected(role_already_picked);
       } else {
-        // If NO SESSIONS exist, force role selection even if it was previously 'true'
+        // If NO SESSIONS exist, force role selection
         setRoleSelected(false);
+        localStorage.removeItem('naomed_roleSelected');
       }
     });
   }, []);
@@ -109,7 +113,9 @@ export default function NaoPortal() {
   }, [activeConvId]);
 
   useEffect(() => {
-    localStorage.setItem('naomed_roleSelected', roleSelected.toString());
+    if (roleSelected !== null) {
+      localStorage.setItem('naomed_roleSelected', roleSelected.toString());
+    }
   }, [roleSelected]);
 
   useEffect(() => {
@@ -156,7 +162,7 @@ export default function NaoPortal() {
   const createNewSession = async () => {
     try {
       const res = await axios.post(`${API_BASE}/conversations`);
-      setConversations([res.data, ...conversations]);
+      setConversations(prev => [res.data, ...prev]);
       setActiveConvId(res.data.id);
       setMessages([]);
       setSummary(null);
@@ -170,7 +176,7 @@ export default function NaoPortal() {
     setRoleSelected(true);
     try {
       const res = await axios.post(`${API_BASE}/conversations`);
-      setConversations([res.data, ...conversations]);
+      setConversations(prev => [res.data, ...prev]);
       setActiveConvId(res.data.id);
       setMessages([]);
       setSummary(null);
@@ -431,13 +437,13 @@ export default function NaoPortal() {
 
       {/* Role Selection Modal */}
       <AnimatePresence>
-        {(!roleSelected || showRoleSelector) && (
+        {(roleSelected === false || showRoleSelector) && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-8"
-            onClick={() => { if (roleSelected) setShowRoleSelector(false); }}
+            onClick={() => { if (roleSelected === true) setShowRoleSelector(false); }}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -453,7 +459,7 @@ export default function NaoPortal() {
                   transition={{ delay: 0.1 }}
                   className="inline-block bg-teal-500/10 border border-teal-500/20 px-6 py-2 rounded-full text-[10px] font-black tracking-[0.5em] text-teal-400 mb-6 uppercase"
                 >
-                  MedBridge Protocol v4.2
+                  NaoMed AI Protocol v4.2
                 </motion.div>
                 <h2 className="text-5xl font-black text-white tracking-tighter mb-4">Select Your Role</h2>
                 <p className="text-slate-500 font-medium max-w-md mx-auto leading-relaxed">Choose your access level to begin the encrypted medical dialogue.</p>
@@ -523,9 +529,9 @@ export default function NaoPortal() {
                   transition={{ delay: 0.2 }}
                   className="inline-block bg-teal-500/10 border border-teal-500/20 px-6 py-2 rounded-full text-[10px] font-black tracking-[0.5em] text-teal-400 mb-6 uppercase"
                 >
-                  MedBridge Protocol v4.2
+                  NaoMed AI Protocol v4.2
                 </motion.div>
-                <h2 className="text-5xl font-black text-white tracking-tighter mb-4">Initialize Care Session</h2>
+                <h2 className="text-5xl font-black text-white tracking-tighter mb-4">NaoMed AI</h2>
                 <p className="text-slate-500 font-medium max-w-md mx-auto leading-relaxed">Begin encrypted medical dialogue by choosing your access level.</p>
               </div>
 

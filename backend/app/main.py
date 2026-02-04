@@ -29,6 +29,10 @@ if not IS_VERCEL:
 # Include Modular Routers
 app.include_router(conversations.router)
 
+@app.get("/")
+def read_root():
+    return {"message": "NaoMedical Backend API is running"}
+
 @app.get("/health")
 def health_check():
     return {"status": "healthy", "mode": "serverless" if IS_VERCEL else "local"}

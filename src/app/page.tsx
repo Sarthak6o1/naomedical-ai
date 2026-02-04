@@ -18,6 +18,7 @@ import {
   Plus,
   RefreshCw,
   Trash2,
+  Pencil,
   Phone,
   Settings,
   Activity,
@@ -185,10 +186,30 @@ export default function NaoPortal() {
       const newConvs = conversations.filter(c => c.id !== id);
       setConversations(newConvs);
       if (activeConvId === id) {
-        setActiveConvId(newConvs.length > 0 ? newConvs[0].id : null);
+        if (newConvs.length > 0) {
+          setActiveConvId(newConvs[0].id);
+        } else {
+          // If all deleted, clear role selection to reset or just leave as is
+          // Better: Auto-create a fresh one immediately to keep flow
+          createNewSession();
+        }
       }
     } catch (err) {
       console.error("Delete failed", err);
+    }
+  };
+
+  const renameSession = async (id: number, currentTitle: string) => {
+    const newTitle = prompt("Enter new session name:", currentTitle);
+    if (!newTitle || newTitle === currentTitle) return;
+
+    try {
+      const res = await axios.patch(`${API_BASE}/conversations/${id}`, null, {
+        params: { title: newTitle }
+      });
+      setConversations(conversations.map(c => c.id === id ? { ...c, title: newTitle } : c));
+    } catch (err) {
+      console.error("Rename failed", err);
     }
   };
 
@@ -348,19 +369,28 @@ export default function NaoPortal() {
                     <Calendar size={15} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-black text-xs truncate tracking-tight">Session #{conv.id}</p>
+                    <p className="font-black text-xs truncate tracking-tight">{conv.title || `Session #${conv.id}`}</p>
                     <div className="flex items-center gap-2 mt-1.5 opacity-60">
                       <Clock size={9} />
                       <p className="text-[9px] font-medium">{new Date(conv.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); deleteSession(conv.id); }}
-                    className="opacity-0 group-hover:opacity-100 p-2.5 hover:bg-red-500/20 hover:text-red-400 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95"
-                    title="Delete session"
-                  >
-                    <Trash2 size={13} />
-                  </button>
+                  <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); renameSession(conv.id, conv.title || `Session #${conv.id}`); }}
+                      className="p-1.5 hover:bg-teal-500/20 hover:text-teal-400 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95"
+                      title="Rename session"
+                    >
+                      <Pencil size={11} />
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); deleteSession(conv.id); }}
+                      className="p-1.5 hover:bg-red-500/20 hover:text-red-400 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95"
+                      title="Delete session"
+                    >
+                      <Trash2 size={11} />
+                    </button>
+                  </div>
                 </button>
               ))}
             </div>

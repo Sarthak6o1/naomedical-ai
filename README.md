@@ -1,13 +1,15 @@
-#  NaoMedical AI Translation Portal
+# 🏥 **NaoMedical AI Translation Portal**
 
 An advanced, clinical-grade Doctor-Patient Translation Hub designed for seamless, real-time medical consultations. Powered by the latest multimodal AI models and a premium, high-fidelity dark interface.
 
-##  Live Access
+![Medical Dashboard](./public/assets/dashboard.png)
+
+## 🚀 Live Access
 **Portal URL:** [https://naomedical-ai.vercel.app/](https://naomedical-ai.vercel.app/)
 
 ---
 
-##  Core Clinical Capabilities
+## ⚕️ Core Clinical Capabilities
 
 | Feature | Description |
 | :--- | :--- |
@@ -26,6 +28,9 @@ An advanced, clinical-grade Doctor-Patient Translation Hub designed for seamless
 
 ### 1. Initiate a Consultation
 - Click the **`+ NEW SESSION`** button on the left sidebar to open a dedicated, encrypted consultation tunnel.
+- **Select Role**: Choose your access level (Doctor or Patient) with the high-end role selector.
+
+![Role Selection](./public/assets/roles.png)
 
 ### 2. Configure Language Target
 - Use the **`LANGUAGE TARGET`** dropdown at the top to select the patient's primary language (e.g., Spanish, French, Japanese).
@@ -34,15 +39,23 @@ An advanced, clinical-grade Doctor-Patient Translation Hub designed for seamless
 - **As a Doctor**: Toggle the "DOCTOR" role. Type clinical directives or hold the **Microphone Icon** at the bottom to record an audio message. The patient will see the translation and hear the synthetic voice.
 - **As a Patient**: Toggle the "PATIENT" role. Input symptoms. The doctor will see the English translation and the original source transcript for accuracy.
 
+| Doctor View | Patient View |
+| :---: | :---: |
+| ![Doctor Chat](./public/assets/chat-doctor.png) | ![Patient Chat](./public/assets/chat-patient.png) |
+
 ### 4. Search & Retrieve
 - Use the **Search Bar** in the header to find specific medical terms. Results will be highlighted in vibrant teal for quick clinical reference.
+
+![Search Interface](./public/assets/search.png)
 
 ### 5. Finalize Documentation
 - Once the consultation is complete, click **`COMPILE SUMMARY`**. This uses AI to parse the entire transcript into a structured medical report which can be copied directly into your EHR (Electronic Health Record) system.
 
+![Summary Report](./public/assets/summary.png)
+
 ---
 
-##  Technical Blueprint
+## 🛠️ Technical Blueprint
 - **Frontend**: Next.js 14+, Tailwind CSS (Glassmorphism), Framer Motion.
 - **Backend**: FastAPI (Python 3.11), SQLAlchemy.
 - **AI Core**: OpenRouter (Multimodal Gateway), Edge-TTS.
